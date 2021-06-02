@@ -3,11 +3,10 @@ Backing up site files and database with only ftp-access.
 Also can restore database from .sql/.sql.gz previously backed or just uploaded file
 ## Quick start
 
- - Edit ```backuper.php``` "settings"-section;
+ - Edit ```backuper.php``` "settings"-section (you can rename ```backuper.php``` to any needed name);
  - Upload ```backuper.php``` to any web-accessible location of your
    site;
  - Navigate to this just using browser.
- - (You can rename ```backuper.php``` to any needed name)
 ## Useful settings
 ```$params['backup_files']``` – true/false. Enables files backup.
 ```$params['backup_db']``` – true/false. Enables database backup.
