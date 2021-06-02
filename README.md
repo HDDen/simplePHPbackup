@@ -1,5 +1,5 @@
 # simplePHPbackup
-Backing up site files and database with only ftp-access
+Backing up site files and database with only ftp-access.
 Also can restore database from .sql/.sql.gz previously backed or just uploaded file
 ## Quick start
 
