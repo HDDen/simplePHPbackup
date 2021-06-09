@@ -15,14 +15,14 @@ $params['backup_db'] = false;
 $params['filter_ip'] = '127.0.0.1'; // false / string. '0.0.0.0,1.1.1.1' for example
 
 $params['backup_folder'] = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/_custom_backup';
-$params['backup_files_name'] = 'backup_' . date("Y-m-d_H-i-s") . '_files';
+$params['backup_files_name'] = 'backup_' . date("d-m-Y_H-i-s") . '_files';
 $params['pack_dir'] = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 $params['exclude_folders'] = array(
     '/webp',
     '/avif',
 ); // relative from document_root, e.g. '/images'
 
-$params['backup_db_name'] = 'backup_' . date("Y-m-d_H-i-s") . '_db';
+$params['backup_db_name'] = 'backup_' . date("d-m-Y_H-i-s") . '_db';
 $params['db_host'] = 'localhost';
 $params['db_user'] = 'abcde_user';
 $params['db_password'] = 'abcde_pass';
@@ -140,7 +140,8 @@ function backupDB($backup_folder, $backup_name, $db_params = false, $gzip = fals
     $fullFileName = $backup_folder . '/' . $backup_name . '.sql';
 
     if ($gzip){
-        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' | gzip > ' . $fullFileName . '.gz';
+        $fullFileName .= '.gz';
+        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' | gzip > ' . $fullFileName;
     } else {
         $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' > ' . $fullFileName;
     }
