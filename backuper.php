@@ -27,6 +27,7 @@ $params['db_host'] = 'localhost';
 $params['db_user'] = 'abcde_user';
 $params['db_password'] = 'abcde_pass';
 $params['db_name'] = 'abcde_database_name';
+$params['use_utf8mb4'] = true;
 $params['gzip_db'] = true;
 $params['restore_db'] = true; // true / false. Show button for restoring
 
@@ -134,6 +135,8 @@ function backupDB($backup_folder, $backup_name, $db_params = false, $gzip = fals
         return false;
     }
 
+    $utf8mb4_param = ($db_params['use_utf8mb4'] ? '--default-character-set=utf8mb4' : '');
+
     // check existing and trim
     $backup_folder = create_path($backup_folder);
 
@@ -141,9 +144,9 @@ function backupDB($backup_folder, $backup_name, $db_params = false, $gzip = fals
 
     if ($gzip){
         $fullFileName .= '.gz';
-        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' | gzip > ' . $fullFileName;
+        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' '.$utf8mb4_param.' | gzip > ' . $fullFileName;
     } else {
-        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' > ' . $fullFileName;
+        $command = 'mysqldump -h ' . $db_params['host'] . ' -u ' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' '.$utf8mb4_param.' > ' . $fullFileName;
     }
 
     $result = shell_exec($command);
@@ -170,13 +173,15 @@ function restore_db($backup_folder, $backup_name, $db_params = false, $gzip = fa
         return false;
     }
 
+    $utf8mb4_param = ($db_params['use_utf8mb4'] ? '--default-character-set=utf8mb4' : '');
+
     // check if gzipped
     if ($gzip || (mb_strpos($backup_name, '.sql.gz') !== false)){
         // gunzip < /path/to/outputfile.sql.gz | mysql --user=USER -pPASSWORD DATABASE
-        $command = 'gunzip < ' . $bkp . ' | mysql --user=' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'];
+        $command = 'gunzip < ' . $bkp . ' | mysql --user=' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' '.$utf8mb4_param;
     } else {
         //mysql --user=root -pPASSWORD DATABASE < backup_2021-06-02_11-36-11.sql
-        $command = 'mysql --user=' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' < ' . $bkp;
+        $command = 'mysql --user=' . $db_params['user'] . ' -p' . $db_params['password'] . ' ' . $db_params['name'] . ' '.$utf8mb4_param.' < ' . $bkp;
     }
 
     $message = 'restore_db(): $command is "'.$command.'"';
@@ -265,7 +270,8 @@ function backup_action(&$params){
                 'host' => $params['db_host'],
                 'user' => $params['db_user'],
                 'password' => $params['db_password'],
-                'name' => $params['db_name']
+                'name' => $params['db_name'],
+                'use_utf8mb4' => $params['use_utf8mb4'],
             ), $params['gzip_db']);
 
             informer('$dbBackup_result = '.($dbBackup_result ? $dbBackup_result : 'false'));
@@ -336,7 +342,8 @@ function restore_action(&$params){
             'host' => $params['db_host'],
             'user' => $params['db_user'],
             'password' => $params['db_password'],
-            'name' => $params['db_name']
+            'name' => $params['db_name'],
+            'use_utf8mb4' => $params['use_utf8mb4'],
         ));
         informer($result);
     }
