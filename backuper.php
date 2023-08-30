@@ -205,6 +205,17 @@ function showSizes($pack_dir){
     return $result;
 }
 
+// get sizes
+function getAvailableSpace(){
+    $command = "df -sh";
+    informer('getAvailableSpace(): executing "'.$command.'"');
+    
+    $result = shell_exec($command);
+    writeLog('getAvailableSpace(): result is:'.PHP_EOL.$result);
+    
+    return $result;
+}
+
 // informer - store to log and print
 function informer($message){
     if (!$message){
@@ -354,6 +365,7 @@ function restore_action(&$params){
 // start action
 function start_action(&$params){
     echo '<pre>' . showSizes($params['pack_dir']) . '</pre>';
+    echo '<pre>' . getAvailableSpace() . '</pre>';
     echo '<p><a class="btn" href="'.strtok($_SERVER['REQUEST_URI'], '?').'?go=true">Start backup</a></p>';
     if ($params['restore_db']){
         echo '<p><a class="btn" href="'.strtok($_SERVER['REQUEST_URI'], '?').'?restoredb=true">Restore DB</a></p>';
