@@ -207,7 +207,7 @@ function showSizes($pack_dir){
 
 // get sizes
 function getAvailableSpace(){
-    $command = "df -sh";
+    $command = "df -h";
     informer('getAvailableSpace(): executing "'.$command.'"');
     
     $result = shell_exec($command);
